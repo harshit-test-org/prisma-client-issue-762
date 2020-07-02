@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = "***"
+}
+
+model Transcriber {
+  id               String                       @id @default(cuid())
+  email            String                       @unique
+  firstName        String
+  lastName         String
+  competencies     TranscriberCompetency[]
+}
+
+model TranscriberCompetency {
+  id            String      @id @default(cuid())
+  transcriber   Transcriber @relation(fields: [transcriberId], references: [id])
+  transcriberId String
+  competency    Competency  @relation(fields: [competencyId], references: [id])
+  competencyId  String
+  level         Int
+  @@unique([transcriberId, competencyId])
+}
+
+model Competency {
+  id                          String                       @id @default(cuid())
+  type                        String
+  name                        String                       @unique
+  transcriberCompetencies     TranscriberCompetency[]
+}
+
